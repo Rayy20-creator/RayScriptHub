@@ -4,8 +4,12 @@
 local RayHub = {}
 
 function RayHub.CreateMenu()
+    local Players = game:GetService("Players")
+    local player = Players.LocalPlayer
+
     local gui = Instance.new("ScreenGui")
     gui.Name = "RayHubGUI"
+    gui.ResetOnSpawn = false
 
     local frame = Instance.new("Frame")
     frame.Name = "MainFrame"
@@ -15,13 +19,15 @@ function RayHub.CreateMenu()
     frame.Parent = gui
 
     local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, 0, 0, 40)
+    title.Size = UDim2.new(1, -40, 0, 40)
+    title.BackgroundTransparency = 1
     title.Text = "RAYHUB"
+    title.TextColor3 = Color3.new(1, 1, 1)
     title.Parent = frame
 
     local close = Instance.new("TextButton")
-    close.Size = UDim2.new(0, 50, 0, 30)
-    close.Position = UDim2.new(1, -50, 0, 0)
+    close.Size = UDim2.new(0, 40, 0, 35)
+    close.Position = UDim2.new(1, -40, 0, 0)
     close.Text = "X"
     close.Parent = frame
 
@@ -29,7 +35,9 @@ function RayHub.CreateMenu()
         gui:Destroy()
     end)
 
-    gui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+    gui.Parent = player:WaitForChild("PlayerGui")
 end
+
+RayHub.CreateMenu()
 
 return RayHub

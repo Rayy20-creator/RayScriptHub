@@ -1,0 +1,232 @@
+-- RAY&SI HUB
+-- Client-side GUI
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local old = playerGui:FindFirstChild("RAYSI_HUB")
+if old then
+    old:Destroy()
+end
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "RAYSI_HUB"
+gui.ResetOnSpawn = false
+gui.Parent = playerGui
+
+local main = Instance.new("Frame")
+main.Size = UDim2.new(0, 320, 0, 390)
+main.Position = UDim2.new(0.5, -160, 0.5, -195)
+main.BackgroundColor3 = Color3.fromRGB(16, 16, 22)
+main.BorderSizePixel = 0
+main.Active = true
+main.Draggable = true
+main.Parent = gui
+
+Instance.new("UICorner", main).CornerRadius =
+    UDim.new(0, 12)
+
+local stroke = Instance.new("UIStroke", main)
+stroke.Color = Color3.fromRGB(145, 80, 255)
+stroke.Thickness = 1.5
+
+local shadow = Instance.new("ImageLabel")
+shadow.Name = "Shadow"
+shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+shadow.Position = UDim2.new(0.5, 0, 0.5, 5)
+shadow.Size = UDim2.new(1, 40, 1, 40)
+shadow.BackgroundTransparency = 1
+shadow.Image = "rbxassetid://6014261993"
+shadow.ImageColor3 = Color3.new(0, 0, 0)
+shadow.ImageTransparency = 0.35
+shadow.ScaleType = Enum.ScaleType.Slice
+shadow.SliceCenter = Rect.new(49, 49, 450, 450)
+shadow.ZIndex = 0
+shadow.Parent = main
+main.ZIndex = 1
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -50, 0, 45)
+title.Position = UDim2.new(0, 14, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "RAY&SI HUB"
+title.TextColor3 = Color3.fromRGB(190, 140, 255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 22
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.Parent = main
+
+local close = Instance.new("TextButton")
+close.Size = UDim2.new(0, 30, 0, 30)
+close.Position = UDim2.new(1, -38, 0, 8)
+close.BackgroundColor3 = Color3.fromRGB(100, 35, 45)
+close.Text = "X"
+close.TextColor3 = Color3.new(1, 1, 1)
+close.Font = Enum.Font.GothamBold
+close.TextSize = 15
+close.Parent = main
+Instance.new("UICorner", close).CornerRadius =
+    UDim.new(0, 7)
+
+local tabs = Instance.new("Frame")
+tabs.Size = UDim2.new(1, -20, 0, 38)
+tabs.Position = UDim2.new(0, 10, 0, 50)
+tabs.BackgroundTransparency = 1
+tabs.Parent = main
+
+local function createButton(parent, text, pos, size)
+    local b = Instance.new("TextButton")
+    b.Size = size or UDim2.new(1, 0, 0, 38)
+    b.Position = pos or UDim2.new()
+    b.BackgroundColor3 = Color3.fromRGB(35, 32, 47)
+    b.TextColor3 = Color3.fromRGB(240, 240, 245)
+    b.Font = Enum.Font.GothamMedium
+    b.TextSize = 13
+    b.Text = text
+    b.AutoButtonColor = true
+    b.Parent = parent
+
+    Instance.new("UICorner", b).CornerRadius =
+        UDim.new(0, 7)
+
+    return b
+end
+
+local mainTab = createButton(
+    tabs, "MAIN", UDim2.new(),
+    UDim2.new(0.49, 0, 1, 0)
+)
+
+local settingsTab = createButton(
+    tabs, "PENGATURAN",
+    UDim2.new(0.51, 0, 0, 0),
+    UDim2.new(0.49, 0, 1, 0)
+)
+
+local content = Instance.new("ScrollingFrame")
+content.Size = UDim2.new(1, -20, 1, -105)
+content.Position = UDim2.new(0, 10, 0, 95)
+content.BackgroundTransparency = 1
+content.BorderSizePixel = 0
+content.ScrollBarThickness = 4
+content.CanvasSize = UDim2.new(0, 0, 0, 0)
+content.Parent = main
+
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0, 8)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Parent = content
+
+layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(
+    function()
+        content.CanvasSize = UDim2.new(
+            0, 0, 0, layout.AbsoluteContentSize.Y + 8
+        )
+    end
+)
+
+local function clear()
+    for _, v in ipairs(content:GetChildren()) do
+        if v:IsA("TextButton") or v:IsA("TextLabel") then
+            v:Destroy()
+        end
+    end
+end
+
+local function label(text)
+    local l = Instance.new("TextLabel")
+    l.Size = UDim2.new(1, -4, 0, 28)
+    l.BackgroundTransparency = 1
+    l.Text = text
+    l.TextColor3 = Color3.fromRGB(190, 175, 215)
+    l.Font = Enum.Font.GothamBold
+    l.TextSize = 13
+    l.TextXAlignment = Enum.TextXAlignment.Left
+    l.Parent = content
+    return l
+end
+
+local function showMain()
+    clear()
+
+    label("MOVEMENT")
+
+    createButton(content, "Fly", nil).MouseButton1Click:Connect(
+        function()
+            warn("Fly membutuhkan implementasi yang didukung game.")
+        end
+    )
+
+    createButton(content, "Noclip", nil).MouseButton1Click:Connect(
+        function()
+            warn("Noclip membutuhkan implementasi yang didukung game.")
+        end
+    )
+
+    label("TELEPORT TO PLAYER")
+    createButton(content, "Refresh Player List", nil).MouseButton1Click:Connect(
+        function()
+            showMain()
+        end
+    )
+
+    for _, target in ipairs(Players:GetPlayers()) do
+        if target ~= player then
+            createButton(content, target.Name, nil).MouseButton1Click:Connect(
+                function()
+                    warn("Teleport tidak tersedia tanpa dukungan game.")
+                end
+            )
+        end
+    end
+end
+
+local function showSettings()
+    clear()
+
+    label("PENGATURAN")
+
+    createButton(content, "Save Settings", nil).MouseButton1Click:Connect(
+        function()
+            warn("Pengaturan tersimpan hanya jika penyimpanan tersedia.")
+        end
+    )
+
+    createButton(content, "Load Settings", nil).MouseButton1Click:Connect(
+        function()
+            warn("Pemuatan pengaturan belum dikonfigurasi.")
+        end
+    )
+
+    createButton(content, "Reset Settings", nil).MouseButton1Click:Connect(
+        function()
+            showSettings()
+        end
+    )
+
+    createButton(content, "Auto Execute", nil).MouseButton1Click:Connect(
+        function()
+            warn("Auto Execute bergantung pada lingkungan yang digunakan.")
+        end
+    )
+
+    createButton(content, "Server Hop", nil).MouseButton1Click:Connect(
+        function()
+            warn("Server Hop memerlukan akses server yang didukung.")
+        end
+    )
+
+    label("RAY&SI HUB | GUI VERSION 1.0")
+end
+
+mainTab.MouseButton1Click:Connect(showMain)
+settingsTab.MouseButton1Click:Connect(showSettings)
+
+close.MouseButton1Click:Connect(function()
+    gui:Destroy()
+end)
+
+showMain()

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAY&SI HUB | Lua Library</title>
+<style>
+:root {
+  --bg: #070b14;
+  --card: #101a2b;
+  --blue: #00bfff;
+  --text: #edf7ff;
+  --muted: #9aafc8;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+}
+header {
+  padding: 24px 18px;
+  border-bottom: 1px solid #18334a;
+  background: #0b1220;
+}
+.logo {
+  color: var(--blue);
+  font-size: 27px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+header p { color: var(--muted); margin-bottom: 0; }
+.hero {
+  margin: 20px;
+  padding: 24px;
+  border: 1px solid #16486b;
+  border-radius: 16px;
+  background: linear-gradient(135deg,#101e35,#07101d);
+  box-shadow: 0 0 25px #00bfff12;
+}
+.hero h1 { margin-top: 0; }
+.hero span { color: var(--blue); }
+.search {
+  width: calc(100% - 40px);
+  margin: 0 20px 16px;
+  padding: 14px;
+  border: 1px solid #23415d;
+  border-radius: 10px;
+  background: var(--card);
+  color: white;
+  font-size: 16px;
+}
+.filters {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 20px 16px;
+}
+.filters button, .copy {
+  border: 0;
+  border-radius: 8px;
+  background: var(--blue);
+  color: #00121d;
+  padding: 10px 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.filters button {
+  white-space: nowrap;
+  background: #13263b;
+  color: var(--text);
+}
+.filters button.active { background: var(--blue); color: #00121d; }
+main {
+  padding: 0 20px 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+  gap: 15px;
+}
+.card {
+  padding: 17px;
+  border-radius: 13px;
+  border: 1px solid #1b344c;
+  background: var(--card);
+}
+.tag {
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: bold;
+}
+.card h2 { font-size: 18px; }
+.card p { color: var(--muted); line-height: 1.5; }
+pre {
+  padding: 13px;
+  overflow-x: auto;
+  white-space: pre;
+  border-radius: 8px;
+  background: #060a11;
+  color: #bcecff;
+  font-size: 12px;
+}
+.copy { width: 100%; }
+.empty { color: var(--muted); text-align: center; grid-column: 1/-1; }
+footer {
+  text-align: center;
+  padding: 25px;
+  color: var(--muted);
+  border-top: 1px solid #18334a;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">RAY&SI HUB</div>
+  <p>Roblox Lua Library • Blue Neon Edition</p>
+</header>
+
+<section class="hero">
+  <h1>Welcome to <span>RAY&SI HUB</span></h1>
+  <p>Kumpulan contoh kode Lua, tutorial, dan alat bantu untuk project Roblox Studio.</p>
+</section>
+
+<input id="search" class="search" placeholder="🔎 Cari kode Lua..." oninput="render()">
+
+<div class="filters">
+  <button class="active" onclick="setFilter('All',this)">Semua</button>
+  <button onclick="setFilter('Basic',this)">Basic</button>
+  <button onclick="setFilter('UI',this)">UI</button>
+  <button onclick="setFilter('Gameplay',this)">Gameplay</button>
+</div>
+
+<main id="library"></main>
+
+<footer>
+  RAY&SI HUB © 2026<br>
+  Contoh kode untuk Roblox Studio dan project yang kamu miliki.
+</footer>
+
+<script>
+const scripts = [
+  {
+    name: "Welcome Message",
+    category: "Basic",
+    description: "Menampilkan pesan saat pemain masuk ke game milikmu.",
+    code: `local Players = game:GetService("Players")
+
+Players.PlayerAdded:Connect(function(player)
+    print("Welcome, " .. player.Name)
+end)`
+  },
+  {
+    name: "Part Color Cycle",
+    category: "Gameplay",
+    description: "Mengubah warna Part secara berkala. Taruh Script di dalam Part.",
+    code: `local part = script.Parent
+
+local colors = {
+    Color3.fromRGB(0, 190, 255),
+    Color3.fromRGB(120, 70, 255),
+    Color3.fromRGB(0, 255, 180)
+}
+
+local index = 1
+
+while true do
+    part.Color = colors[index]
+    index = index % #colors + 1
+    task.wait(1)
+end`
+  },
+  {
+    name: "Coins Leaderboard",
+    category: "Gameplay",
+    description: "Membuat statistik Coins untuk pemain.",
+    code: `local Players = game:GetService("Players")
+
+Players.PlayerAdded:Connect(function(player)
+    local stats = Instance.new("Folder")
+    stats.Name = "leaderstats"
+    stats.Parent = player
+
+    local coins = Instance.new("IntValue")
+    coins.Name = "Coins"
+    coins.Value = 0
+    coins.Parent = stats
+end)`
+  },
+  {
+    name: "Simple GUI",
+    category: "UI",
+    description: "Membuat tombol sederhana di layar pemain. Gunakan LocalScript.",
+    code: `local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Name = "RAYSI_GUI"
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0, 180, 0, 50)
+button.Position = UDim2.new(0.5, -90, 0.5, -25)
+button.Text = "RAY&SI HUB"
+button.Parent = gui
+
+button.MouseButton1Click:Connect(function()
+    button.Text = "Hello, Roblox!"
+end)`
+  }
+];
+
+let activeFilter = "All";
+
+function setFilter(filter, button) {
+  activeFilter = filter;
+  document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
+  button.classList.add("active");
+  render();
+}
+
+function render() {
+  const query = document.getElementById("search").value.toLowerCase();
+  const filtered = scripts.filter(s =>
+    (activeFilter === "All" || s.category === activeFilter) &&
+    (s.name.toLowerCase().includes(query) ||
+     s.description.toLowerCase().includes(query) ||
+     s.category.toLowerCase().includes(query))
+  );
+
+  const library = document.getElementById("library");
+  library.innerHTML = "";
+
+  if (!filtered.length) {
+    library.innerHTML = '<p class="empty">Kode tidak ditemukan.</p>';
+    return;
+  }
+
+  filtered.forEach((s, i) => {
+    const card = document.createElement("article");
+    card.className = "card";
+
+    const tag = document.createElement("div");
+    tag.className = "tag";
+    tag.textContent = s.category.toUpperCase();
+
+    const title = document.createElement("h2");
+    title.textContent = s.name;
+
+    const desc = document.createElement("p");
+    desc.textContent = s.description;
+
+    const pre = document.createElement("pre");
+    pre.textContent = s.code;
+
+    const copy = document.createElement("button");
+    copy.className = "copy";
+    copy.textContent = "📋 COPY CODE";
+    copy.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(s.code);
+        copy.textContent = "✓ COPIED!";
+      } catch {
+        const area = document.createElement("textarea");
+        area.value = s.code;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand("copy");
+        area.remove();
+        copy.textContent = "✓ COPIED!";
+      }
+      setTimeout(() => copy.textContent = "📋 COPY CODE", 1500);
+    };
+
+    card.append(tag, title, desc, pre, copy);
+    library.appendChild(card);
+  });
+}
+
+render();
+</script>
+</body>
+  </html>

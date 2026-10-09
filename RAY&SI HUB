@@ -112,28 +112,32 @@ statusLabel.Parent = displayFrame
 
 -- 8. MEMUAT SCRIPT RAY&SI HUB
 local function executeUserScript()
-    statusLabel.Text = "Memuat RAY&SI HUB..."
+    statusLabel.Text = "Sedang memuat RAY&SI HUB..."
     statusLabel.TextColor3 = Color3.fromRGB(0, 255, 120)
 
-    local success, result = pcall(function()
-        local url = "https://raw.githubusercontent.com/Rayy20-creator/RayScriptHub/Pages/RAY%26SI%20HUB"
-        local source = game:HttpGet(url)
+    task.spawn(function()
+        local success, err = pcall(function()
+            local url = "https://raw.githubusercontent.com/Rayy20-creator/RayScriptHub/refs/heads/Pages/RAY%26SI%20HUB"
 
-        screenGui:Destroy()
+            local source = game:HttpGet(url)
+            assert(#source > 0, "File Lua kosong")
 
-        local loadedFunction = loadstring(source)
-        assert(loadedFunction, "Kode Lua tidak valid")
+            local scriptFunction, compileError = loadstring(source)
+            assert(scriptFunction, compileError or "Gagal membaca kode Lua")
 
-        loadedFunction()
-    end)
+            screenGui:Destroy()
+            scriptFunction()
+        end)
 
-    if not success then
-        if screenGui.Parent then
-            statusLabel.TextColor3 = Color3.fromRGB(255, 70, 70)
-            statusLabel.Text = "Gagal memuat script: " .. tostring(result)
+        if not success then
+            warn("RAY&SI HUB Error: " .. tostring(err))
+
+            if screenGui.Parent then
+                statusLabel.TextColor3 = Color3.fromRGB(255, 70, 70)
+                statusLabel.Text = "Gagal memuat: " .. tostring(err)
+            end
         end
-        warn("RAY&SI HUB error: " .. tostring(result))
-    end
+    end)
 end
 
 -- 9. VERIFIKASI KEY
@@ -141,13 +145,12 @@ verifyBtn.MouseButton1Click:Connect(function()
     local inputedKey = keyInput.Text
 
     if keyList[inputedKey] then
+        statusLabel.Text = "Key benar! Memuat RAY&SI HUB..."
         statusLabel.TextColor3 = Color3.fromRGB(0, 255, 120)
-        statusLabel.Text = "Key valid! Memuat RAY&SI HUB..."
-        task.wait(1)
         executeUserScript()
     else
+        statusLabel.Text = "Key salah! Coba lagi."
         statusLabel.TextColor3 = Color3.fromRGB(255, 70, 70)
-        statusLabel.Text = "Key salah! Silakan coba lagi."
     end
 end)
 

@@ -2,12 +2,7 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local player = Players.LocalPlayer
 
--- 1. SISTEM KEY
-local keyList = {
-    ["RAYYAN_2014&SISI_2016"] = true
-}
-
--- 2. GUI
+-- 1. GUI
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "RAY&SI HUB"
 screenGui.ResetOnSpawn = false
@@ -31,7 +26,7 @@ stroke.Color = Color3.fromRGB(45, 45, 50)
 stroke.Thickness = 1.5
 stroke.Parent = mainFrame
 
--- 3. JUDUL
+-- 2. JUDUL
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(1, 0, 0, 50)
 titleLabel.BackgroundTransparency = 1
@@ -41,57 +36,10 @@ titleLabel.TextSize = 18
 titleLabel.Font = Enum.Font.GothamBold
 titleLabel.Parent = mainFrame
 
--- 4. INPUT KEY
-local keyInput = Instance.new("TextBox")
-keyInput.Size = UDim2.new(0.85, 0, 0, 45)
-keyInput.Position = UDim2.new(0.075, 0, 0.22, 0)
-keyInput.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-keyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-keyInput.PlaceholderText = "Masukkan Key di sini..."
-keyInput.PlaceholderColor3 = Color3.fromRGB(120, 120, 130)
-keyInput.Font = Enum.Font.Gotham
-keyInput.TextSize = 14
-keyInput.ClearTextOnFocus = false
-keyInput.Parent = mainFrame
-
-local inputCorner = Instance.new("UICorner")
-inputCorner.CornerRadius = UDim.new(0, 8)
-inputCorner.Parent = keyInput
-
--- 5. TOMBOL VERIFIKASI
-local verifyBtn = Instance.new("TextButton")
-verifyBtn.Size = UDim2.new(0.4, 0, 0, 40)
-verifyBtn.Position = UDim2.new(0.075, 0, 0.42, 0)
-verifyBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-verifyBtn.TextColor3 = Color3.fromRGB(15, 15, 15)
-verifyBtn.Text = "VERIFIKASI"
-verifyBtn.Font = Enum.Font.GothamBold
-verifyBtn.TextSize = 13
-verifyBtn.Parent = mainFrame
-
-local verifyCorner = Instance.new("UICorner")
-verifyCorner.CornerRadius = UDim.new(0, 8)
-verifyCorner.Parent = verifyBtn
-
--- 6. TOMBOL GET KEY
-local getKeyBtn = Instance.new("TextButton")
-getKeyBtn.Size = UDim2.new(0.42, 0, 0, 40)
-getKeyBtn.Position = UDim2.new(0.505, 0, 0.42, 0)
-getKeyBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
-getKeyBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
-getKeyBtn.Text = "DAPATKAN KEY"
-getKeyBtn.Font = Enum.Font.GothamBold
-getKeyBtn.TextSize = 12
-getKeyBtn.Parent = mainFrame
-
-local getKeyCorner = Instance.new("UICorner")
-getKeyCorner.CornerRadius = UDim.new(0, 8)
-getKeyCorner.Parent = getKeyBtn
-
--- 7. STATUS
+-- 3. STATUS
 local displayFrame = Instance.new("Frame")
 displayFrame.Size = UDim2.new(0.85, 0, 0.35, 0)
-displayFrame.Position = UDim2.new(0.075, 0, 0.58, 0)
+displayFrame.Position = UDim2.new(0.075, 0, 0.25, 0)
 displayFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
 displayFrame.Parent = mainFrame
 
@@ -103,18 +51,34 @@ local statusLabel = Instance.new("TextLabel")
 statusLabel.Size = UDim2.new(1, -20, 1, -20)
 statusLabel.Position = UDim2.new(0, 10, 0, 10)
 statusLabel.BackgroundTransparency = 1
-statusLabel.Text = "RAY&SI HUB siap digunakan."
-statusLabel.TextColor3 = Color3.fromRGB(150, 150, 160)
+statusLabel.Text = "RAY&SI HUB sedang dimuat..."
+statusLabel.TextColor3 = Color3.fromRGB(0, 255, 120)
 statusLabel.Font = Enum.Font.Gotham
 statusLabel.TextSize = 13
 statusLabel.TextWrapped = true
 statusLabel.Parent = displayFrame
 
--- 8. MEMUAT SCRIPT RAY&SI HUB
-local function executeUserScript()
-    statusLabel.Text = "Sedang memuat RAY&SI HUB..."
-    statusLabel.TextColor3 = Color3.fromRGB(0, 255, 120)
+-- 4. TOMBOL TUTUP
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0.4, 0, 0, 40)
+closeBtn.Position = UDim2.new(0.3, 0, 0.75, 0)
+closeBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.Text = "TUTUP"
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 13
+closeBtn.Parent = mainFrame
 
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(0, 8)
+closeCorner.Parent = closeBtn
+
+closeBtn.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+-- 5. MEMUAT SCRIPT RAY&SI HUB
+local function executeUserScript()
     task.spawn(function()
         local success, err = pcall(function()
             local url = "https://raw.githubusercontent.com/Rayy20-creator/RayScriptHub/refs/heads/Pages/RAY%26SI%20HUB"
@@ -140,22 +104,5 @@ local function executeUserScript()
     end)
 end
 
--- 9. VERIFIKASI KEY
-verifyBtn.MouseButton1Click:Connect(function()
-    local inputedKey = keyInput.Text
-
-    if keyList[inputedKey] then
-        statusLabel.Text = "Key benar! Memuat RAY&SI HUB..."
-        statusLabel.TextColor3 = Color3.fromRGB(0, 255, 120)
-        executeUserScript()
-    else
-        statusLabel.Text = "Key salah! Coba lagi."
-        statusLabel.TextColor3 = Color3.fromRGB(255, 70, 70)
-    end
-end)
-
--- 10. TOMBOL GET KEY
-getKeyBtn.MouseButton1Click:Connect(function()
-    statusLabel.TextColor3 = Color3.fromRGB(150, 150, 160)
-    statusLabel.Text = "Masukkan key untuk melanjutkan."
-end)
+-- 6. LANGSUNG MEMUAT TANPA KEY
+executeUserScript()

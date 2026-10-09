@@ -1,0 +1,312 @@
+--========================================--
+--             RAY&SI HUB                --
+--       BLUE NEON + SHADOW GUI           --
+--========================================--
+
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local KEY = "RAYYAN_2014&SISI_2016"
+
+local BLUE = Color3.fromRGB(0, 170, 255)
+local DARK = Color3.fromRGB(10, 12, 20)
+local PANEL = Color3.fromRGB(15, 23, 40)
+local WHITE = Color3.fromRGB(245, 250, 255)
+
+-- REMOVE OLD GUI
+local old = playerGui:FindFirstChild("RAY&SI")
+if old then
+    old:Destroy()
+end
+
+-- SCREEN GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "RAY&SI"
+gui.ResetOnSpawn = false
+gui.Parent = playerGui
+
+-- UI HELPERS
+local function create(class, properties, parent)
+    local object = Instance.new(class)
+
+    for property, value in pairs(properties) do
+        object[property] = value
+    end
+
+    object.Parent = parent
+    return object
+end
+
+local function corner(object, radius)
+    create("UICorner", {
+        CornerRadius = UDim.new(0, radius or 10)
+    }, object)
+end
+
+local function outline(object)
+    create("UIStroke", {
+        Color = BLUE,
+        Thickness = 1.5,
+        Transparency = 0.1
+    }, object)
+end
+
+-- KEY WINDOW
+local keyFrame = create("Frame", {
+    Name = "KeyWindow",
+    Size = UDim2.fromOffset(320, 185),
+    Position = UDim2.new(0.5, -160, 0.5, -92),
+    BackgroundColor3 = DARK,
+    BorderSizePixel = 0
+}, gui)
+
+corner(keyFrame, 12)
+outline(keyFrame)
+
+create("TextLabel", {
+    Size = UDim2.new(1, 0, 0, 50),
+    BackgroundTransparency = 1,
+    Text = "RAY&SI HUB",
+    TextColor3 = BLUE,
+    Font = Enum.Font.GothamBold,
+    TextSize = 24
+}, keyFrame)
+
+create("TextLabel", {
+    Position = UDim2.fromOffset(10, 43),
+    Size = UDim2.new(1, -20, 0, 22),
+    BackgroundTransparency = 1,
+    Text = "BLUE NEON EDITION",
+    TextColor3 = WHITE,
+    Font = Enum.Font.Gotham,
+    TextSize = 11
+}, keyFrame)
+
+local keyBox = create("TextBox", {
+    Position = UDim2.fromOffset(15, 72),
+    Size = UDim2.new(1, -30, 0, 38),
+    BackgroundColor3 = PANEL,
+    PlaceholderText = "Enter key...",
+    Text = "",
+    TextColor3 = WHITE,
+    PlaceholderColor3 = Color3.fromRGB(145, 155, 175),
+    Font = Enum.Font.Gotham,
+    TextSize = 13,
+    ClearTextOnFocus = false
+}, keyFrame)
+
+corner(keyBox)
+outline(keyBox)
+
+local verify = create("TextButton", {
+    Position = UDim2.fromOffset(15, 119),
+    Size = UDim2.new(1, -30, 0, 35),
+    BackgroundColor3 = BLUE,
+    Text = "VERIFY KEY",
+    TextColor3 = WHITE,
+    Font = Enum.Font.GothamBold,
+    TextSize = 14
+}, keyFrame)
+
+corner(verify)
+
+local message = create("TextLabel", {
+    Position = UDim2.fromOffset(10, 155),
+    Size = UDim2.new(1, -20, 0, 22),
+    BackgroundTransparency = 1,
+    Text = "Enter your access key",
+    TextColor3 = WHITE,
+    Font = Enum.Font.Gotham,
+    TextSize = 11
+}, keyFrame)
+
+-- MAIN WINDOW
+local main = create("Frame", {
+    Name = "MainHub",
+    Size = UDim2.fromOffset(320, 370),
+    Position = UDim2.new(0.5, -160, 0.5, -185),
+    BackgroundColor3 = DARK,
+    BorderSizePixel = 0,
+    Visible = false,
+    ClipsDescendants = false,
+    ZIndex = 2
+}, gui)
+
+corner(main, 12)
+outline(main)
+
+-- BLUE SHADOW
+local shadow = create("ImageLabel", {
+    Name = "BlueNeonShadow",
+    AnchorPoint = Vector2.new(0.5, 0.5),
+    Position = UDim2.new(0.5, 0, 0.5, 5),
+    Size = UDim2.new(1, 45, 1, 45),
+    BackgroundTransparency = 1,
+    Image = "rbxassetid://6014261993",
+    ImageColor3 = BLUE,
+    ImageTransparency = 0.35,
+    ScaleType = Enum.ScaleType.Slice,
+    SliceCenter = Rect.new(49, 49, 450, 450),
+    ZIndex = 1
+}, main)
+
+local header = create("Frame", {
+    Size = UDim2.new(1, 0, 0, 48),
+    BackgroundColor3 = PANEL,
+    BorderSizePixel = 0,
+    ZIndex = 3
+}, main)
+
+corner(header, 12)
+
+create("TextLabel", {
+    Position = UDim2.fromOffset(12, 0),
+    Size = UDim2.new(1, -90, 1, 0),
+    BackgroundTransparency = 1,
+    Text = "RAY&SI HUB",
+    TextColor3 = BLUE,
+    Font = Enum.Font.GothamBold,
+    TextSize = 20,
+    TextXAlignment = Enum.TextXAlignment.Left,
+    ZIndex = 4
+}, header)
+
+local minimize = create("TextButton", {
+    Position = UDim2.new(1, -75, 0, 8),
+    Size = UDim2.fromOffset(30, 30),
+    BackgroundColor3 = DARK,
+    Text = "-",
+    TextColor3 = WHITE,
+    Font = Enum.Font.GothamBold,
+    TextSize = 20,
+    ZIndex = 4
+}, header)
+
+corner(minimize, 6)
+
+local close = create("TextButton", {
+    Position = UDim2.new(1, -39, 0, 8),
+    Size = UDim2.fromOffset(30, 30),
+    BackgroundColor3 = Color3.fromRGB(160, 40, 55),
+    Text = "X",
+    TextColor3 = WHITE,
+    Font = Enum.Font.GothamBold,
+    TextSize = 14,
+    ZIndex = 4
+}, header)
+
+corner(close, 6)
+
+local content = create("ScrollingFrame", {
+    Position = UDim2.fromOffset(10, 55),
+    Size = UDim2.new(1, -20, 1, -65),
+    BackgroundTransparency = 1,
+    BorderSizePixel = 0,
+    ScrollBarThickness = 4,
+    ScrollBarImageColor3 = BLUE,
+    AutomaticCanvasSize = Enum.AutomaticSize.Y,
+    CanvasSize = UDim2.new(0, 0, 0, 0),
+    ZIndex = 3
+}, main)
+
+create("UIListLayout", {
+    Padding = UDim.new(0, 8),
+    SortOrder = Enum.SortOrder.LayoutOrder
+}, content)
+
+local function addButton(text, callback)
+    local button = create("TextButton", {
+        Size = UDim2.new(1, -5, 0, 38),
+        BackgroundColor3 = PANEL,
+        Text = text,
+        TextColor3 = WHITE,
+        Font = Enum.Font.GothamSemibold,
+        TextSize = 14,
+        ZIndex = 4
+    }, content)
+
+    corner(button, 8)
+    outline(button)
+
+    button.Activated:Connect(callback)
+    return button
+end
+
+-- PLAYER FEATURES
+addButton("Player List", function()
+    local names = {}
+
+    for _, other in ipairs(Players:GetPlayers()) do
+        table.insert(names, other.DisplayName)
+    end
+
+    print("Players: " .. table.concat(names, ", "))
+end)
+
+addButton("Reset Character", function()
+    local character = player.Character
+    local humanoid = character
+        and character:FindFirstChildOfClass("Humanoid")
+
+    if humanoid then
+        humanoid.Health = 0
+    end
+end)
+
+addButton("Rejoin Server", function()
+    TeleportService:Teleport(game.PlaceId, player)
+end)
+
+local afk = false
+
+local afkButton = addButton("AFK Status: OFF", function()
+    afk = not afk
+
+    afkButton.Text = afk
+        and "AFK Status: ON"
+        or "AFK Status: OFF"
+end)
+
+-- KEY VERIFICATION
+-- This local check is only a demo.
+-- Do not publish a real secret key in a public repository.
+
+verify.Activated:Connect(function()
+    if keyBox.Text == KEY then
+        message.Text = "Key accepted!"
+        message.TextColor3 = Color3.fromRGB(80, 255, 150)
+
+        task.wait(0.4)
+        keyFrame.Visible = false
+        main.Visible = true
+
+        keyBox.Text = ""
+    else
+        message.Text = "Invalid key!"
+        message.TextColor3 = Color3.fromRGB(255, 80, 100)
+    end
+end)
+
+-- MINIMIZE
+local minimized = false
+
+minimize.Activated:Connect(function()
+    minimized = not minimized
+    content.Visible = not minimized
+
+    main.Size = minimized
+        and UDim2.fromOffset(320, 48)
+        or UDim2.fromOffset(320, 370)
+
+    minimize.Text = minimized and "+" or "-"
+end)
+
+-- CLOSE
+close.Activated:Connect(function()
+    gui:Destroy()
+end)
+
+print("RAY&SI Hub loaded")

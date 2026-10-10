@@ -1,7 +1,7 @@
---========================================
+--==================================================
 -- RAY&SI HUB
 -- Key System + Dark GUI
---========================================
+--==================================================
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -18,497 +18,199 @@ if oldGui then
     oldGui:Destroy()
 end
 
+--==================================================
 -- GUI ROOT
+--==================================================
+
 local gui = Instance.new("ScreenGui")
 gui.Name = "RAY&SI HUB"
 gui.ResetOnSpawn = false
-gui.IgnoreGuiInset = false
 gui.DisplayOrder = 100
-gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.Parent = playerGui
 
-local function addCorner(object, radius)
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, radius)
-    corner.Parent = object
+local function corner(object, radius)
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, radius)
+    c.Parent = object
 end
 
-local function addStroke(object, color, thickness)
-    local stroke = Instance.new("UIStroke")
-    stroke.Color = color
-    stroke.Thickness = thickness
-    stroke.Transparency = 0.2
-    stroke.Parent = object
+local function stroke(object, color, thickness)
+    local s = Instance.new("UIStroke")
+    s.Color = color
+    s.Thickness = thickness or 1
+    s.Transparency = 0.2
+    s.Parent = object
 end
 
-local function addShadow(object)
-    local shadow = Instance.new("ImageLabel")
-    shadow.Name = "Shadow"
-    shadow.BackgroundTransparency = 1
-    shadow.Image = "rbxassetid://6014261993"
-    shadow.ImageColor3 = Color3.new(0, 0, 0)
-    shadow.ImageTransparency = 0.5
-    shadow.ScaleType = Enum.ScaleType.Slice
-    shadow.SliceCenter = Rect.new(49, 49, 450, 450)
-    shadow.Size = UDim2.new(1, 30, 1, 30)
-    shadow.Position = UDim2.new(0, -15, 0, -15)
-    shadow.ZIndex = 0
-    shadow.Active = false
-    shadow.Parent = object
+local function makeLabel(parent, text, height)
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, -10, 0, height or 30)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(220, 220, 235)
+    label.TextSize = 13
+    label.Font = Enum.Font.GothamBold
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextWrapped = true
+    label.Parent = parent
+    return label
 end
 
+local function makeButton(parent, text, callback)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, -10, 0, 36)
+    button.BackgroundColor3 = Color3.fromRGB(34, 34, 44)
+    button.BorderSizePixel = 0
+    button.Text = text
+    button.TextColor3 = Color3.fromRGB(245, 245, 255)
+    button.TextSize = 12
+    button.Font = Enum.Font.Gotham
+    button.AutoButtonColor = true
+    button.Parent = parent
+
+    corner(button, 7)
+    stroke(button, Color3.fromRGB(65, 65, 82))
+
+    button.Activated:Connect(callback)
+    return button
+end
+
+--==================================================
 -- KEY WINDOW
+--==================================================
+
 local keyFrame = Instance.new("Frame")
 keyFrame.Name = "KeyWindow"
 keyFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-keyFrame.Size = UDim2.new(0.88, 0, 0, 205)
+keyFrame.Size = UDim2.new(0.88, 0, 0, 210)
 keyFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-keyFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 19)
+keyFrame.BackgroundColor3 = Color3.fromRGB(16, 16, 21)
 keyFrame.BorderSizePixel = 0
-keyFrame.ZIndex = 2
 keyFrame.Parent = gui
 
-local keySizeLimit = Instance.new("UISizeConstraint")
-keySizeLimit.MaxSize = Vector2.new(340, 205)
-keySizeLimit.MinSize = Vector2.new(260, 205)
-keySizeLimit.Parent = keyFrame
+local keyConstraint = Instance.new("UISizeConstraint")
+keyConstraint.MinSize = Vector2.new(260, 210)
+keyConstraint.MaxSize = Vector2.new(340, 210)
+keyConstraint.Parent = keyFrame
 
-addCorner(keyFrame, 12)
-addStroke(keyFrame, Color3.fromRGB(75, 75, 90), 1)
-addShadow(keyFrame)
+corner(keyFrame, 12)
+stroke(keyFrame, Color3.fromRGB(90, 80, 130), 1)
 
 local keyTitle = Instance.new("TextLabel")
-keyTitle.Size = UDim2.new(1, -20, 0, 42)
+keyTitle.Size = UDim2.new(1, -20, 0, 38)
 keyTitle.Position = UDim2.new(0, 10, 0, 8)
 keyTitle.BackgroundTransparency = 1
 keyTitle.Text = "RAY&SI HUB"
 keyTitle.TextColor3 = Color3.new(1, 1, 1)
 keyTitle.TextSize = 23
 keyTitle.Font = Enum.Font.GothamBold
-keyTitle.ZIndex = 3
 keyTitle.Parent = keyFrame
 
 local keySubtitle = Instance.new("TextLabel")
 keySubtitle.Size = UDim2.new(1, -20, 0, 24)
-keySubtitle.Position = UDim2.new(0, 10, 0, 45)
+keySubtitle.Position = UDim2.new(0, 10, 0, 43)
 keySubtitle.BackgroundTransparency = 1
 keySubtitle.Text = "Enter your access key"
-keySubtitle.TextColor3 = Color3.fromRGB(155, 155, 170)
+keySubtitle.TextColor3 = Color3.fromRGB(160, 160, 175)
 keySubtitle.TextSize = 13
 keySubtitle.Font = Enum.Font.Gotham
-keySubtitle.ZIndex = 3
 keySubtitle.Parent = keyFrame
 
 local keyBox = Instance.new("TextBox")
 keyBox.Size = UDim2.new(1, -36, 0, 39)
-keyBox.Position = UDim2.new(0, 18, 0, 78)
-keyBox.BackgroundColor3 = Color3.fromRGB(28, 28, 35)
+keyBox.Position = UDim2.new(0, 18, 0, 76)
+keyBox.BackgroundColor3 = Color3.fromRGB(29, 29, 38)
 keyBox.BorderSizePixel = 0
 keyBox.PlaceholderText = "Enter key here..."
-keyBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 135)
+keyBox.PlaceholderColor3 = Color3.fromRGB(130, 130, 145)
 keyBox.Text = ""
 keyBox.TextColor3 = Color3.new(1, 1, 1)
 keyBox.TextSize = 13
 keyBox.Font = Enum.Font.Gotham
 keyBox.ClearTextOnFocus = false
-keyBox.ZIndex = 3
 keyBox.Parent = keyFrame
 
-addCorner(keyBox, 7)
-addStroke(keyBox, Color3.fromRGB(65, 65, 80), 1)
+corner(keyBox, 7)
+stroke(keyBox, Color3.fromRGB(70, 70, 85))
 
 local verifyButton = Instance.new("TextButton")
 verifyButton.Size = UDim2.new(1, -36, 0, 36)
-verifyButton.Position = UDim2.new(0, 18, 0, 125)
+verifyButton.Position = UDim2.new(0, 18, 0, 122)
 verifyButton.BackgroundColor3 = Color3.fromRGB(100, 75, 220)
 verifyButton.BorderSizePixel = 0
 verifyButton.Text = "VERIFY KEY"
 verifyButton.TextColor3 = Color3.new(1, 1, 1)
 verifyButton.TextSize = 13
 verifyButton.Font = Enum.Font.GothamBold
-verifyButton.ZIndex = 3
 verifyButton.Parent = keyFrame
 
-addCorner(verifyButton, 7)
+corner(verifyButton, 7)
 
 local keyStatus = Instance.new("TextLabel")
-keyStatus.Size = UDim2.new(1, -20, 0, 22)
+keyStatus.Size = UDim2.new(1, -20, 0, 25)
 keyStatus.Position = UDim2.new(0, 10, 0, 164)
 keyStatus.BackgroundTransparency = 1
 keyStatus.Text = ""
-keyStatus.TextColor3 = Color3.fromRGB(255, 100, 100)
+keyStatus.TextColor3 = Color3.fromRGB(255, 90, 100)
 keyStatus.TextSize = 12
 keyStatus.Font = Enum.Font.Gotham
-keyStatus.ZIndex = 3
 keyStatus.Parent = keyFrame
 
+--==================================================
 -- MAIN HUB
+--==================================================
+
 local function createHub()
-    keyFrame:Destroy()
+    keyFrame.Visible = false
 
     local main = Instance.new("Frame")
     main.Name = "MainHub"
     main.AnchorPoint = Vector2.new(0.5, 0.5)
-    main.Size = UDim2.new(0.92, 0, 0, 300)
+    main.Size = UDim2.new(0.92, 0, 0, 320)
     main.Position = UDim2.new(0.5, 0, 0.5, 0)
-    main.BackgroundColor3 = Color3.fromRGB(14, 14, 18)
+    main.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
     main.BorderSizePixel = 0
-    main.ClipsDescendants = false
-    main.ZIndex = 2
+    main.ClipsDescendants = true
     main.Parent = gui
 
-    local mainSizeLimit = Instance.new("UISizeConstraint")
-    mainSizeLimit.MaxSize = Vector2.new(520, 300)
-    mainSizeLimit.MinSize = Vector2.new(280, 300)
-    mainSizeLimit.Parent = main
+    local constraint = Instance.new("UISizeConstraint")
+    constraint.MinSize = Vector2.new(280, 320)
+    constraint.MaxSize = Vector2.new(520, 320)
+    constraint.Parent = main
 
-    addCorner(main, 12)
-    addStroke(main, Color3.fromRGB(75, 75, 90), 1)
-    addShadow(main)
+    corner(main, 12)
+    stroke(main, Color3.fromRGB(90, 80, 130), 1)
 
-    local content = Instance.new("Frame")
-    content.Name = "Content"
-    content.Size = UDim2.new(1, 0, 1, 0)
-    content.BackgroundTransparency = 1
-    content.ClipsDescendants = true
-    content.ZIndex = 3
-    content.Parent = main
-    addCorner(content, 12)
-
-    -- HEADER
+    -- Header
     local header = Instance.new("Frame")
     header.Size = UDim2.new(1, 0, 0, 48)
-    header.BackgroundColor3 = Color3.fromRGB(23, 23, 29)
+    header.BackgroundColor3 = Color3.fromRGB(26, 26, 34)
     header.BorderSizePixel = 0
-    header.ZIndex = 4
-    header.Parent = content
-
-    addCorner(header, 12)
+    header.Parent = main
 
     local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, -115, 1, 0)
-    title.Position = UDim2.new(0, 15, 0, 0)
+    title.Size = UDim2.new(1, -100, 1, 0)
+    title.Position = UDim2.new(0, 12, 0, 0)
     title.BackgroundTransparency = 1
     title.Text = "RAY&SI HUB"
     title.TextColor3 = Color3.new(1, 1, 1)
-    title.TextSize = 18
+    title.TextSize = 17
     title.TextXAlignment = Enum.TextXAlignment.Left
     title.Font = Enum.Font.GothamBold
-    title.ZIndex = 5
     title.Parent = header
 
     local minimize = Instance.new("TextButton")
-    minimize.Size = UDim2.new(0, 35, 0, 30)
-    minimize.Position = UDim2.new(1, -80, 0, 9)
-    minimize.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
+    minimize.Size = UDim2.new(0, 32, 0, 30)
+    minimize.Position = UDim2.new(1, -73, 0, 9)
+    minimize.BackgroundColor3 = Color3.fromRGB(48, 48, 60)
     minimize.Text = "-"
     minimize.TextColor3 = Color3.new(1, 1, 1)
-    minimize.TextSize = 22
+    minimize.TextSize = 21
     minimize.Font = Enum.Font.GothamBold
-    minimize.ZIndex = 5
     minimize.Parent = header
-    addCorner(minimize, 7)
+    corner(minimize, 6)
 
     local close = Instance.new("TextButton")
-    close.Size = UDim2.new(0, 35, 0, 30)
-    close.Position = UDim2.new(1, -40, 0, 9)
-    close.BackgroundColor3 = Color3.fromRGB(160, 48, 60)
-    close.Text = "X"
-    close.TextColor3 = Color3.new(1, 1, 1)
-    close.TextSize = 14
-    close.Font = Enum.Font.GothamBold
-    close.ZIndex = 5
-    close.Parent = header
-    addCorner(close, 7)
-
-    -- SIDEBAR
-    local sidebar = Instance.new("Frame")
-    sidebar.Size = UDim2.new(0, 100, 1, -58)
-    sidebar.Position = UDim2.new(0, 8, 0, 53)
-    sidebar.BackgroundColor3 = Color3.fromRGB(22, 22, 28)
-    sidebar.BorderSizePixel = 0
-    sidebar.ZIndex = 4
-    sidebar.Parent = content
-    addCorner(sidebar, 8)
-
-    local pages = Instance.new("Frame")
-    pages.Size = UDim2.new(1, -124, 1, -65)
-    pages.Position = UDim2.new(0, 116, 0, 57)
-    pages.BackgroundTransparency = 1
-    pages.ZIndex = 4
-    pages.Parent = content
-
-    local pageNames = {"Home", "Eggs", "Player", "Settings"}
-    local pageFrames = {}
-    local tabButtons = {}
-    local selectedColor = Color3.fromRGB(100, 75, 220)
-
-    local function makePage(name)
-        local page = Instance.new("ScrollingFrame")
-        page.Name = name
-        page.Size = UDim2.new(1, 0, 1, 0)
-        page.BackgroundTransparency = 1
-        page.BorderSizePixel = 0
-        page.ScrollBarThickness = 3
-        page.ScrollBarImageColor3 = selectedColor
-        page.CanvasSize = UDim2.new(0, 0, 0, 0)
-        page.AutomaticCanvasSize = Enum.AutomaticSize.Y
-        page.Visible = false
-        page.ZIndex = 5
-        page.Parent = pages
-
-        local padding = Instance.new("UIPadding")
-        padding.PaddingRight = UDim.new(0, 5)
-        padding.Parent = page
-
-        local layout = Instance.new("UIListLayout")
-        layout.Padding = UDim.new(0, 8)
-        layout.SortOrder = Enum.SortOrder.LayoutOrder
-        layout.Parent = page
-
-        pageFrames[name] = page
-        return page
-    end
-
-    for _, name in ipairs(pageNames) do
-        makePage(name)
-    end
-
-    local function makeLabel(page, text)
-        local label = Instance.new("TextLabel")
-        label.Size = UDim2.new(1, -5, 0, 30)
-        label.BackgroundTransparency = 1
-        label.Text = text
-        label.TextColor3 = Color3.fromRGB(200, 200, 215)
-        label.TextSize = 13
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.Font = Enum.Font.GothamBold
-        label.ZIndex = 6
-        label.Parent = page
-        return label
-    end
-
-    local function makeButton(page, text, callback)
-        local button = Instance.new("TextButton")
-        button.Size = UDim2.new(1, -5, 0, 36)
-        button.BackgroundColor3 = Color3.fromRGB(29, 29, 37)
-        button.BorderSizePixel = 0
-        button.Text = text
-        button.TextColor3 = Color3.fromRGB(235, 235, 245)
-        button.TextSize = 12
-        button.Font = Enum.Font.Gotham
-        button.ZIndex = 6
-        button.Parent = page
-
-        addCorner(button, 7)
-        addStroke(button, Color3.fromRGB(52, 52, 65), 1)
-
-        button.Activated:Connect(callback)
-        return button
-    end
-
-    -- HOME
-    makeLabel(pageFrames.Home, "Welcome to RAY&SI HUB")
-
-    makeButton(pageFrames.Home, "Hub Information", function()
-        makeLabel(pageFrames.Home, "RAY&SI HUB is running.")
-    end)
-
-    makeButton(pageFrames.Home, "Reset Character", function()
-        local character = player.Character
-        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-
-        if humanoid then
-            humanoid.Health = 0
-        end
-    end)
-
-    -- EGGS: placeholder for your own game's system
-    makeLabel(pageFrames.Eggs, "Egg Features")
-
-    makeButton(pageFrames.Eggs, "Egg System Information", function()
-        makeLabel(pageFrames.Eggs, "Connect your own egg system here.")
-    end)
-
-    makeButton(pageFrames.Eggs, "Egg Collection Status", function()
-        makeLabel(pageFrames.Eggs, "Collection system is not connected.")
-    end)
-
-    -- PLAYER
-    makeLabel(pageFrames.Player, "Player Settings")
-
-    local speedEnabled = false
-    local speedButton
-
-    speedButton = makeButton(pageFrames.Player, "WalkSpeed: 16 (OFF)", function()
-        local character = player.Character
-        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-
-        if not humanoid then
-            return
-        end
-
-        speedEnabled = not speedEnabled
-
-        if speedEnabled then
-            humanoid.WalkSpeed = 24
-            speedButton.Text = "WalkSpeed: 24 (ON)"
-        else
-            humanoid.WalkSpeed = 16
-            speedButton.Text = "WalkSpeed: 16 (OFF)"
-        end
-    end)
-
-    -- SETTINGS
-    makeLabel(pageFrames.Settings, "Interface Settings")
-
-    local infoButton = makeButton(pageFrames.Settings, "Show Hub Status", function()
-        infoButton.Text = "RAY&SI HUB: Active"
-    end)
-
-    -- NAVIGATION
-    local function showPage(name)
-        for pageName, page in pairs(pageFrames) do
-            page.Visible = pageName == name
-        end
-
-        for buttonName, button in pairs(tabButtons) do
-            button.BackgroundColor3 =
-                buttonName == name
-                and selectedColor
-                or Color3.fromRGB(30, 30, 38)
-        end
-    end
-
-    for index, name in ipairs(pageNames) do
-        local tab = Instance.new("TextButton")
-        tab.Size = UDim2.new(1, -12, 0, 36)
-        tab.Position = UDim2.new(0, 6, 0, 7 + (index - 1) * 43)
-        tab.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
-        tab.BorderSizePixel = 0
-        tab.Text = name
-        tab.TextColor3 = Color3.new(1, 1, 1)
-        tab.TextSize = 12
-        tab.Font = Enum.Font.GothamBold
-        tab.ZIndex = 5
-        tab.Parent = sidebar
-        addCorner(tab, 7)
-
-        tabButtons[name] = tab
-        tab.Activated:Connect(function()
-            showPage(name)
-        end)
-    end
-
-    showPage("Home")
-
-    -- MINIMIZE / REOPEN
-    local reopen = Instance.new("TextButton")
-    reopen.Name = "ReopenHub"
-    reopen.Size = UDim2.new(0, 110, 0, 38)
-    reopen.Position = UDim2.new(0, 12, 0.5, -19)
-    reopen.BackgroundColor3 = selectedColor
-    reopen.Text = "RAY&SI HUB"
-    reopen.TextColor3 = Color3.new(1, 1, 1)
-    reopen.TextSize = 12
-    reopen.Font = Enum.Font.GothamBold
-    reopen.Visible = false
-    reopen.ZIndex = 10
-    reopen.Parent = gui
-    addCorner(reopen, 8)
-
-    minimize.Activated:Connect(function()
-        main.Visible = false
-        reopen.Visible = true
-    end)
-
-    reopen.Activated:Connect(function()
-        main.Visible = true
-        reopen.Visible = false
-    end)
-
-    close.Activated:Connect(function()
-        gui:Destroy()
-    end)
-
-    -- DRAG: mouse and touch
-    local dragging = false
-    local dragStart
-    local startPosition
-    local dragInput
-
-    header.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1
-            or input.UserInputType == Enum.UserInputType.Touch then
-
-            dragging = true
-            dragStart = input.Position
-            startPosition = main.Position
-            dragInput = input
-
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
-
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and (
-            input.UserInputType == Enum.UserInputType.MouseMovement
-            or input.UserInputType == Enum.UserInputType.Touch
-        ) then
-            local delta = input.Position - dragStart
-
-            main.Position = UDim2.new(
-                startPosition.X.Scale,
-                startPosition.X.Offset + delta.X,
-                startPosition.Y.Scale,
-                startPosition.Y.Offset + delta.Y
-            )
-        end
-    end)
-end
-
--- KEY VERIFICATION
-local busy = false
-
-local function verifyKey()
-    if busy then
-        return
-    end
-
-    if keyBox.Text == CORRECT_KEY then
-        busy = true
-        verifyButton.Text = "KEY ACCEPTED"
-        verifyButton.BackgroundColor3 = Color3.fromRGB(50, 160, 95)
-        keyStatus.TextColor3 = Color3.fromRGB(100, 255, 150)
-        keyStatus.Text = "Welcome to RAY&SI HUB!"
-
-        task.wait(0.5)
-        createHub()
-    else
-        keyStatus.Text = "Invalid key. Try again."
-        keyStatus.TextColor3 = Color3.fromRGB(255, 90, 100)
-        keyBox.Text = ""
-
-        local originalPosition = keyFrame.Position
-        local tween = TweenService:Create(
-            keyFrame,
-            TweenInfo.new(0.06, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, 3, true),
-            {Position = originalPosition + UDim2.new(0, 5, 0, 0)}
-        )
-        tween:Play()
-    end
-end
-
-verifyButton.Activated:Connect(verifyKey)
-
-keyBox.FocusLost:Connect(function(enterPressed)
-    if enterPressed then
-        verifyKey()
-    end
-end)
-
-print("RAY&SI HUB loaded. Please enter your key.")
+    close.Size = UDim2.new(0, 32, 0, 30)
+    close.Position = UDim2.new(1, -36, 0, 9)
+    close.BackgroundColor3 = Color3.fromRGB(165
